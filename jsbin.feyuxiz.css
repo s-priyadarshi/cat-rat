@@ -1,0 +1,58 @@
+#result {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  font-size: 50px;
+}
+#cat {
+  position: relative;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 30px;
+  height: 35px;
+  background: grey;
+  border-radius: 20px 20px 0px 0px;
+}
+p {  
+  width: 5px;
+  height: 5px;
+  background: #000;
+  border-radius: 50%;
+
+}
+#rat {
+  position: relative;
+  background-image: url("https://cdn3.iconfinder.com/data/icons/line-svg/24/rat-512.png");
+  width: 20px;
+  height: 20px;
+  background-size: 100% 100%;
+  display: none;
+}
+main {
+  width: 500px;
+  height: 500px;
+  border: 1px solid black;
+  margin: auto;
+}
+body {
+  width: 500px;
+  height: 500px;
+  margin: auto;
+}
+h4 {
+  text-align: center;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+tongue {
+  font-family: 'Bauhaus 93';
+  position: absolute;
+  top: 17px;
+  color: red;
+  display: none;
+}

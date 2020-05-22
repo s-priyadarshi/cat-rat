@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<meta name="description" content="Cat and Rat">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Cat Rat</title>
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+  <style id="jsbin-css">
+#result {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  font-size: 50px;
+}
+#cat {
+  position: relative;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 30px;
+  height: 35px;
+  background: grey;
+  border-radius: 20px 20px 0px 0px;
+}
+p {  
+  width: 5px;
+  height: 5px;
+  background: #000;
+  border-radius: 50%;
+
+}
+#rat {
+  position: relative;
+  background-image: url("https://cdn3.iconfinder.com/data/icons/line-svg/24/rat-512.png");
+  width: 20px;
+  height: 20px;
+  background-size: 100% 100%;
+  display: none;
+}
+main {
+  width: 500px;
+  height: 500px;
+  border: 1px solid black;
+  margin: auto;
+}
+body {
+  width: 500px;
+  height: 500px;
+  margin: auto;
+}
+h4 {
+  text-align: center;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+tongue {
+  font-family: 'Bauhaus 93';
+  position: absolute;
+  top: 17px;
+  color: red;
+  display: none;
+}
+</style>
+</head>
+  <body>
+    <h1 id="result"></h1>
+    <header>      
+      <h4>Score: <span id="score"></span></h4>    
+      <button id="start" onclick="start()">Start</button>
+      <button id="reset" onclick="reset()">Reset</button>
+      <h4>High Score: <span id="highscore"></span></h4>
+      <h4>Time: <span id="time"></span></h4>
+    </header>
+    <main>
+      <div id="cat">
+        <p></p>
+        <p></p>
+        <tongue>u</tongue>
+      </div>
+      <br>
+      <div id="rat"></div>
+    </main>
+  <script id="jsbin-javascript">
+var x = 0;
+var y = 0;
+var score = 0;
+var highScore = 0;
+var time = 120;
+var timer;
+var ratTimer;
+var inProcess;
+var increment;
+var gameOver = false;
+var speed = 10;
+var ease = 5000;
+$("#highscore").text(highScore);
+function start() {
+  /* Rat Movement */
+  $("html").focus();
+  ratTimer = setInterval(function(){
+    $('#rat').css({"left": Math.random() * 470 , "top": Math.random() * 435});
+    $('#rat').css("display", "block");
+  }, ease);
+
+  if(!inProcess) {
+    /* Increment Score */
+    increment = setInterval(function(){
+      $("#score").text(score);
+      if(eaten(cat, rat)){
+        score += 1;
+        $('tongue').css("display", "block");
+        setTimeout(function() {
+          $('tongue').css("display", "none");
+        }, 200);
+        $('#rat').css("display", "none");
+        if(score == 5) {
+          clearInterval(ratTimer);
+          inProcess = true;
+          ease -= 1000;
+          speed += 10;
+          start(ease);
+        }
+        if(score == 10) {
+          clearInterval(ratTimer);
+          inProcess = true;
+          ease -= 1000;
+          speed += 10;
+          start(ease);
+        }
+        if(score == 20) {
+          clearInterval(ratTimer);
+          inProcess = true;
+          ease -= 500;
+          speed += 10;
+          start(ease);
+        }
+        if(score == 30) {
+          clearInterval(ratTimer);
+          inProcess = true;
+          ease -= 500;
+          speed += 10;
+          start(ease);
+        }
+      }
+    }, 0);  
+    timer = setInterval(function() { 
+      time -= 1;
+      if(time === 0) {
+        $("#result").text("Game over!");
+        $('#result').css("display", "block");
+        $("#result").css("color", "red");
+        clearInterval(timer);
+        clearInterval(ratTimer);
+        clearInterval(increment);
+        if(score > highScore) {
+          highScore = score;
+        }
+        $("#highscore").text(highScore);
+
+        gameOver = true;
+      }
+      $("#time").text(time);
+    }, 1000);
+    $("#start").prop('disabled', true);
+    $("#reset").prop('disabled', false);
+    inProcess = true;
+  }
+}
+function reset() {
+  $("#time").text("2:00");
+  $("#reset").prop('disabled', true);
+  $("#start").prop('disabled', false);
+  clearInterval(timer);
+  clearInterval(ratTimer);
+  clearInterval(increment);
+  time = 120;
+  score = 0;
+  ease = 5000;
+  speed = 10; 
+  x = 0;
+  y = 0;
+  inProcess = false;
+  gameOver = false;
+  $("#cat").css("background-color", "grey");
+  $('#cat').css({"left": 0 , "top": 0});
+  $('#rat').css("display", "none");
+  $('#result').css("display", "none");
+  $("#score").text(score);
+}
+
+$("html").keydown(function(event){
+  if(!inProcess) {
+    start();
+  }
+  if(!gameOver) {
+    $("#cat").css("background-color", "rgb(126, 141, 255)");
+    if(event.which == "39") {
+      if(x>=470) {
+        x = 0;
+      } else {
+        x += speed; 
+      }
+      $("#cat").css({"left": x}); 
+      $("p").css("border-radius", "0px 50% 50% 0px"); 
+    }
+    if(event.which == "37") {
+      if(x<0) {
+        x = 470;
+      } else {
+        x -= speed; 
+      }      
+      $("#cat").css({"left": x});
+      $("p").css("border-radius", "50% 0px 0% 50%");
+    }
+    if(event.which == "40") {
+      if(y>470) {
+        y = 0;
+      } else {
+        y += speed; 
+      }  
+      $("#cat").css({"top": y});
+      $("p").css("border-radius", "0% 0% 50% 50%"); 
+    }
+    if(event.which == "38") {
+      if(y<0) {
+        y = 470;
+      } else {
+        y -= speed; 
+      }
+      $("#cat").css({"top": y});
+      $("p").css("border-radius", "50% 50% 0% 0%"); 
+    }
+  }
+});
+
+
+function eaten(el1, el2) {
+  el1.offsetBottom = el1.offsetTop + el1.offsetHeight;
+  el1.offsetRight = el1.offsetLeft + el1.offsetWidth;
+  el2.offsetBottom = el2.offsetTop + el2.offsetHeight;
+  el2.offsetRight = el2.offsetLeft + el2.offsetWidth;
+
+  return !((el1.offsetBottom < el2.offsetTop) ||
+           (el1.offsetTop > el2.offsetBottom) ||
+           (el1.offsetRight < el2.offsetLeft) ||
+           (el1.offsetLeft > el2.offsetRight))
+}
+</script>
+
+
+<script id="jsbin-source-css" type="text/css">#result {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  font-size: 50px;
+}
+#cat {
+  position: relative;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 30px;
+  height: 35px;
+  background: grey;
+  border-radius: 20px 20px 0px 0px;
+}
+p {  
+  width: 5px;
+  height: 5px;
+  background: #000;
+  border-radius: 50%;
+
+}
+#rat {
+  position: relative;
+  background-image: url("https://cdn3.iconfinder.com/data/icons/line-svg/24/rat-512.png");
+  width: 20px;
+  height: 20px;
+  background-size: 100% 100%;
+  display: none;
+}
+main {
+  width: 500px;
+  height: 500px;
+  border: 1px solid black;
+  margin: auto;
+}
+body {
+  width: 500px;
+  height: 500px;
+  margin: auto;
+}
+h4 {
+  text-align: center;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+tongue {
+  font-family: 'Bauhaus 93';
+  position: absolute;
+  top: 17px;
+  color: red;
+  display: none;
+}</script>
+
+<script id="jsbin-source-javascript" type="text/javascript">var x = 0;
+var y = 0;
+var score = 0;
+var highScore = 0;
+var time = 120;
+var timer;
+var ratTimer;
+var inProcess;
+var increment;
+var gameOver = false;
+var speed = 10;
+var ease = 5000;
+$("#highscore").text(highScore);
+function start() {
+  /* Rat Movement */
+  $("html").focus();
+  ratTimer = setInterval(function(){
+    $('#rat').css({"left": Math.random() * 470 , "top": Math.random() * 435});
+    $('#rat').css("display", "block");
+  }, ease);
+
+  if(!inProcess) {
+    /* Increment Score */
+    increment = setInterval(function(){
+      $("#score").text(score);
+      if(eaten(cat, rat)){
+        score += 1;
+        $('tongue').css("display", "block");
+        setTimeout(function() {
+          $('tongue').css("display", "none");
+        }, 200);
+        $('#rat').css("display", "none");
+        if(score == 5) {
+          clearInterval(ratTimer);
+          inProcess = true;
+          ease -= 1000;
+          speed += 10;
+          start(ease);
+        }
+        if(score == 10) {
+          clearInterval(ratTimer);
+          inProcess = true;
+          ease -= 1000;
+          speed += 10;
+          start(ease);
+        }
+        if(score == 20) {
+          clearInterval(ratTimer);
+          inProcess = true;
+          ease -= 500;
+          speed += 10;
+          start(ease);
+        }
+        if(score == 30) {
+          clearInterval(ratTimer);
+          inProcess = true;
+          ease -= 500;
+          speed += 10;
+          start(ease);
+        }
+      }
+    }, 0);  
+    timer = setInterval(function() { 
+      time -= 1;
+      if(time === 0) {
+        $("#result").text("Game over!");
+        $('#result').css("display", "block");
+        $("#result").css("color", "red");
+        clearInterval(timer);
+        clearInterval(ratTimer);
+        clearInterval(increment);
+        if(score > highScore) {
+          highScore = score;
+        }
+        $("#highscore").text(highScore);
+
+        gameOver = true;
+      }
+      $("#time").text(time);
+    }, 1000);
+    $("#start").prop('disabled', true);
+    $("#reset").prop('disabled', false);
+    inProcess = true;
+  }
+}
+function reset() {
+  $("#time").text("2:00");
+  $("#reset").prop('disabled', true);
+  $("#start").prop('disabled', false);
+  clearInterval(timer);
+  clearInterval(ratTimer);
+  clearInterval(increment);
+  time = 120;
+  score = 0;
+  ease = 5000;
+  speed = 10; 
+  x = 0;
+  y = 0;
+  inProcess = false;
+  gameOver = false;
+  $("#cat").css("background-color", "grey");
+  $('#cat').css({"left": 0 , "top": 0});
+  $('#rat').css("display", "none");
+  $('#result').css("display", "none");
+  $("#score").text(score);
+}
+
+$("html").keydown(function(event){
+  if(!inProcess) {
+    start();
+  }
+  if(!gameOver) {
+    $("#cat").css("background-color", "rgb(126, 141, 255)");
+    if(event.which == "39") {
+      if(x>=470) {
+        x = 0;
+      } else {
+        x += speed; 
+      }
+      $("#cat").css({"left": x}); 
+      $("p").css("border-radius", "0px 50% 50% 0px"); 
+    }
+    if(event.which == "37") {
+      if(x<0) {
+        x = 470;
+      } else {
+        x -= speed; 
+      }      
+      $("#cat").css({"left": x});
+      $("p").css("border-radius", "50% 0px 0% 50%");
+    }
+    if(event.which == "40") {
+      if(y>470) {
+        y = 0;
+      } else {
+        y += speed; 
+      }  
+      $("#cat").css({"top": y});
+      $("p").css("border-radius", "0% 0% 50% 50%"); 
+    }
+    if(event.which == "38") {
+      if(y<0) {
+        y = 470;
+      } else {
+        y -= speed; 
+      }
+      $("#cat").css({"top": y});
+      $("p").css("border-radius", "50% 50% 0% 0%"); 
+    }
+  }
+});
+
+
+function eaten(el1, el2) {
+  el1.offsetBottom = el1.offsetTop + el1.offsetHeight;
+  el1.offsetRight = el1.offsetLeft + el1.offsetWidth;
+  el2.offsetBottom = el2.offsetTop + el2.offsetHeight;
+  el2.offsetRight = el2.offsetLeft + el2.offsetWidth;
+
+  return !((el1.offsetBottom < el2.offsetTop) ||
+           (el1.offsetTop > el2.offsetBottom) ||
+           (el1.offsetRight < el2.offsetLeft) ||
+           (el1.offsetLeft > el2.offsetRight))
+}
+
+</script></body>
+</html>
