@@ -8,7 +8,7 @@ var ratTimer;
 var inProcess;
 var increment;
 var gameOver = false;
-var speed = 10;
+var speed = 7.5;
 var ease = 5000;
 $("#highscore").text(highScore);
 function start() {
@@ -34,28 +34,28 @@ function start() {
           clearInterval(ratTimer);
           inProcess = true;
           ease -= 1000;
-          speed += 10;
+          speed += 2.5;
           start(ease);
         }
         if(score == 10) {
           clearInterval(ratTimer);
           inProcess = true;
           ease -= 1000;
-          speed += 10;
+          speed += 2.5;
           start(ease);
         }
         if(score == 20) {
           clearInterval(ratTimer);
           inProcess = true;
           ease -= 500;
-          speed += 10;
+          speed += 2.5;
           start(ease);
         }
         if(score == 30) {
           clearInterval(ratTimer);
           inProcess = true;
           ease -= 500;
-          speed += 10;
+          speed += 5;
           start(ease);
         }
       }
@@ -93,7 +93,7 @@ function reset() {
   time = 120;
   score = 0;
   ease = 5000;
-  speed = 10; 
+  speed = 7.5; 
   x = 0;
   y = 0;
   inProcess = false;
